@@ -1,18 +1,19 @@
-# .NET
-bin/
-obj/
-*.user
-*.suo
-.vs/
-*.swp
-TestResults/
-artifacts/
-*.nupkg
-project.lock.json
-project.fragment.lock.json
-
-# Docker
-.docker/
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+coverage.xml
 
 # Env / secrets
 .env
@@ -20,22 +21,10 @@ project.fragment.lock.json
 !.env.example
 !.env.*.example
 secrets/
-*.pfx
-appsettings.*.local.json
-appsettings.Development.json
-!appsettings.Development.json.example
 
-# Node (optional tooling / scripts)
-node_modules/
-.npm/
-.pnpm-store/
-*.log
-npm-debug.log*
-
-# Python (if scripts added)
-.venv/
-__pycache__/
-*.pyc
+# Docker
+.docker/
+pgdata/
 
 # OS / IDE
 .DS_Store
@@ -44,19 +33,14 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json.example
-*.DotSettings.user
-
-# Database dumps / backups
-*.sql.bak
-*.dump
-pgdata/
 
 # Documentation — local only (never push .md to GitHub)
 *.md
 docs/
 
 # Misc
-coverage/
 tmp/
 .temp/
 *.log
+*.sql.bak
+*.dump

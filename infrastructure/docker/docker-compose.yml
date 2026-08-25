@@ -1,0 +1,48 @@
+name: ssb-prep-api
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ssbprep}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ssbprep}
+      POSTGRES_DB: ${POSTGRES_DB:-ssbprep}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ssbprep} -d ${POSTGRES_DB:-ssbprep}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/Dockerfile.api
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-ssbprep}:${POSTGRES_PASSWORD:-ssbprep}@postgres:5432/${POSTGRES_DB:-ssbprep}
+      INGEST_KEY: ${INGEST_KEY:-change-me-local-only}
+      JWT_SECRET: ${JWT_SECRET:-change-me-local-only}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  worker:
+    profiles: ["worker"]
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/Dockerfile.worker
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-ssbprep}:${POSTGRES_PASSWORD:-ssbprep}@postgres:5432/${POSTGRES_DB:-ssbprep}
+      INGEST_KEY: ${INGEST_KEY:-change-me-local-only}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
