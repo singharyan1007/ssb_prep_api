@@ -1,1 +1,3 @@
-"""Pydantic request/response models. Filled in as each lesson adds routes."""
+from app.api.schemas.current_affairs import ExtractedArticle
+
+__all__ = ["ExtractedArticle"]
